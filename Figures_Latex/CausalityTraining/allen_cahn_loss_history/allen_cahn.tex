@@ -1,0 +1,80 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=newest}
+\usepackage{subcaption}
+\usepackage{amsmath}
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+
+\pgfplotsset{
+    colormap={seismic}{
+        rgb255=(0,0,76)
+        rgb255=(0,0,153)
+        rgb255=(0,0,229)
+        rgb255=(1,100,252)
+        rgb255=(102,178,255)
+        rgb255=(204,229,255)
+        rgb255=(251,252,253)
+        rgb255=(255,228,225)
+        rgb255=(255,177,172)
+        rgb255=(252,99,98)
+        rgb255=(229,0,0)
+        rgb255=(153,0,0)
+        rgb255=(76,0,0)
+    }
+}
+
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\begin{document}
+
+
+\begin{tikzpicture}
+    \begin{axis}[
+        xlabel={Iteration},
+        ylabel={Value},
+        legend pos=north east,
+        grid=major,
+        width=0.6\mainwidth,
+        height=0.4\mainwidth,
+        ymode=log,
+            ]  
+            \addplot[
+                color=color3,
+                line width=1.5pt,
+            ] table [x=idx, y=loss, col sep=space] {causality_loss.dat};
+            \addlegendentry{Loss CT}
+            
+            \addplot[
+                color=color3,
+                line width=1.5pt,
+                dashed,
+            ] table [x=idx, y=l2_error, col sep=space] {causality_loss.dat};
+            \addlegendentry{$\text{MSE}_{ref}$ CT}
+
+            \addplot[
+                color=color2,
+                line width=1.5pt,
+            ] table [x=idx, y=loss, col sep=space] {normal_loss.dat};
+            \addlegendentry{Loss NT}
+            
+            \addplot[
+                color=color2,
+                line width=1.5pt,
+                dashed,
+            ] table [x=idx, y=l2_error, col sep=space] {normal_loss.dat};
+            \addlegendentry{$\text{MSE}_{ref}$ NT}
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

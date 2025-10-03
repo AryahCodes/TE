@@ -1,0 +1,94 @@
+\documentclass[margin=10pt]{standalone}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=newest}
+\usepackage{subcaption}
+
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+\begin{document}
+
+\begin{tikzpicture}
+
+    \begin{groupplot}[
+        group style={
+            group size=2 by 1,  % two plots side by side
+            horizontal sep=1.5cm,
+        },
+        width=0.45\mainwidth,  % adjust the width of each plot
+        height=0.35\mainwidth,
+    ]
+
+        % First plot
+        \nextgroupplot[
+            xlabel={Iteration},
+            ylabel={Loss},
+            title={Poisson Equation},
+            legend pos=north east,
+            grid=major,
+            ymode=log,
+        ]  
+        \addplot[
+            color=color3,
+            line width=1.5pt,
+        ] table [x=idx, y=loss_qpinn_mean, col sep=space] {poisson_qpinn_loss.dat};
+        \addlegendentry{TE-QPINN}
+        
+        \addplot[
+            color=color2,
+            line width=1.5pt,
+            dotted,
+        ] table [x=idx, y=loss_pinn_mean, col sep=space] {poisson_pinn_2_13_loss.dat};
+        \addlegendentry{PINN 1}
+
+        \addplot[
+            color=color2,
+            dashed,
+            line width=1.5pt,
+        ] table [x=idx, y=loss_pinn_mean, col sep=space] {poisson_pinn_3_10_loss.dat};
+        \addlegendentry{PINN 2}
+
+        % Second plot
+        \nextgroupplot[
+            xlabel={Iteration},
+            title={Burgers Equation},
+            %legend pos=south east,
+            grid=major,
+            ymode=log,
+        ]
+        \addplot[
+            color=color3,
+            line width=1.5pt,
+        ] table [x=idx, y=loss_qpinn_mean, col sep=space] {burgers_qpinn_loss.dat};
+        \addlegendentry{TE-QPINN}
+        
+        \addplot[
+            color=color2,
+            line width=1.5pt,
+            dotted,
+        ] table [x=idx, y=loss_pinn_mean, col sep=space] {burgers_pinn_2_13_loss.dat};
+        \addlegendentry{PINN 1}
+
+        \addplot[
+            color=color2,
+            dashed,
+            line width=1.5pt,
+        ] table [x=idx, y=loss_pinn_mean, col sep=space] {burgers_pinn_3_10_loss.dat};
+        \addlegendentry{PINN 2}
+
+    \end{groupplot}
+
+\end{tikzpicture}
+
+\end{document}

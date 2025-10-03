@@ -1,0 +1,77 @@
+\documentclass[margin=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{caption} % For captions
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+% Define the colors
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\begin{document}
+
+\begin{minipage}[b]{0.45\mainwidth}
+    \centering
+    \begin{tikzpicture}
+            \begin{axis}[
+                ymode=log,
+                ytick={1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1},
+                yticklabels={$10^{-5}$, $10^{-4}$, $10^{-3}$, $10^{-2}$, $10^{-1}$, $10^0$},
+                %title={Plot 1},
+                width=0.45\mainwidth,
+                minor y tick num=9,
+                grid=both,
+                grid style={line width=.1pt, draw=gray!20},
+                xlabel={Iteration},
+                ylabel={Loss},
+                legend style={nodes={scale=0.7, transform shape}}, 
+                legend pos=south west,
+            ]
+                % \addplot[no marks, color=color1, densely dotted, very thick] table [x=iteration, y=NONE, col sep=comma] {loss_history_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                %\addlegendentry{No Emebedding}
+                \addplot[no marks, color=color1, dashed, line width=1.5pt] table [x=iteration, y=CHEBYSHEV, col sep=comma] {loss_history_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{Chebyshev}
+                \addplot[no marks, color=color3, densely dashdotdotted,line width=1.5pt] table [x=iteration, y=TOWER_CHEBYSHEV, col sep=comma] {loss_history_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{Tower-Chebyshev}
+                \addplot[no marks, color=color2, dashdotted,line width=1.5pt] table [x=iteration, y=FNN_BASIS, col sep=comma] {loss_history_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{TE-QPINN}
+            \end{axis}
+    \end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}[b]{0.45\mainwidth}
+    \centering
+    \begin{tikzpicture}
+            \begin{axis}[
+                %title={Plot 2},
+                width=0.45\mainwidth,
+                grid=both,
+                grid style={line width=.1pt, draw=gray!20},
+                xlabel={$x$},
+                ylabel={$u(x)$},
+                legend style={nodes={scale=0.7, transform shape}}, 
+                ylabel near ticks,
+            ]
+                \addplot[no marks, color=color6, line width=4pt, solid, opacity=.7] table [x=x, y=analytical, col sep=comma] {result_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{Reference}
+                %\addplot[no marks, color=color1,very thick, densely dotted] table [x=x, y=NONE, col sep=comma] {result_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                %\addlegendentry{No Emebedding}
+                \addplot[no marks, color=color1, line width=1.5pt, dashed] table [x=x, y=CHEBYSHEV, col sep=comma] {result_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{Chebyshev}
+                \addplot[no marks, color=color3, line width=1.5pt, densely dashdotdotted] table [x=x, y=TOWER_CHEBYSHEV, col sep=comma] {result_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{Tower-Chebyshev}
+                \addplot[no marks, color=color2, line width=1.5pt, dashdotted] table [x=x, y=FNN_BASIS, col sep=comma] {result_N_WIRES_4_N_LAYERS_5_Z_MAG.csv};
+                \addlegendentry{TE-QPINN}
+
+            \end{axis}
+    \end{tikzpicture}
+ \end{minipage}
+\end{document}

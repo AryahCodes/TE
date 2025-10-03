@@ -1,0 +1,110 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+\begin{document}
+\begin{tikzpicture}
+
+    % First plot (Rx1)
+    \begin{axis}[
+        name=plot1,
+        width=6cm, height=6cm,
+        title={$2\arccos(\tilde{x})$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_0, col sep=space] {tower_cheb_data.dat};
+    \end{axis}
+
+    % Second plot (Rx2) to the right of the first one
+    \begin{axis}[
+        name=plot2,
+        at={(plot1.right of south east)}, 
+        anchor=south west,
+        xshift=2.25cm,
+        width=6cm, height=6cm,
+        title={$2\arccos(\tilde{y})$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_1, col sep=space] {tower_cheb_data.dat};
+    \end{axis}
+
+    % Third plot (Rx3) below the first one
+    \begin{axis}[
+        name=plot3,
+        at={(plot1.below south west)}, 
+        anchor=north west,
+        yshift=-1.5cm,
+        width=6cm, height=6cm,
+        title={$4\arccos(\tilde{x})$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_2, col sep=space] {tower_cheb_data.dat};
+    \end{axis}
+
+    % Fourth plot (Rx4) to the right of the third one
+    \begin{axis}[
+        name=plot4,
+        at={(plot3.right of south east)}, 
+        anchor=south west,
+        xshift=2.25cm,
+        width=6cm, height=6cm,
+        title={$4\arccos(\tilde{y})$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_3, col sep=space] {tower_cheb_data.dat};
+    \end{axis}
+    
+\end{tikzpicture}
+
+\end{document}

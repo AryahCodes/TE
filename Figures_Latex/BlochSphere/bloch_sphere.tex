@@ -1,0 +1,57 @@
+\documentclass[margin=5pt]{standalone}
+
+% https://tex.stackexchange.com/questions/345420/how-to-draw-a-bloch-sphere Reference 
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows,calc,math,angles,quotes}
+\usepackage{blochsphere}
+\usepackage{braket}
+
+\begin{document}
+%%%% Change these parameters to change the position of psi, or the size/rotation of the sphere
+\def\rotationSphere{-110}
+\def\radiusSphere{2.5cm}
+\def\psiLat{35}
+\def\psiLon{55}
+\begin{blochsphere}[radius=\radiusSphere,opacity=0,rotation=\rotationSphere]
+  % \drawBallGrid[style={opacity=.3}]{30}{45}
+  % Draw the sphere...
+  \drawLongitudeCircle[]{\rotationSphere} % draw the longitude that face us to delimit the sphere
+  % ... and the equatorial plane
+  \drawLatitudeCircle[style={dashed}]{0}
+  % Define the different points on the bloch sphere
+  \labelLatLon{ket0}{90}{0};
+  \labelLatLon{ket0_min}{-90}{0};
+  \labelLatLon{ket1}{-90}{0};
+  \labelLatLon{ketminus}{0}{180};
+  \labelLatLon{ketplus}{00}{0};
+  \labelLatLon{ketpluspi2}{0}{-90};  % Longitude seems to be defined in the "wrong" direction, hence the minus
+  \labelLatLon{ketplus3pi2}{0}{-270};
+  \labelLatLon{psi}{\psiLat}{-\psiLon};
+  % Draw and label the axis
+  \draw[-latex] (0,0) -- (ket0) node[above,inner sep=.5mm] at (ket0) {\footnotesize $z, \ket{0}$};
+  \draw[] (ket0_min) node[below,inner sep=.5mm] at (ket0_min) {\footnotesize $\ket{1}$};
+  \draw[-latex] (0,0) -- (ketplus) node[below,inner sep=.5mm] at (ketplus) {\footnotesize$x$};
+  \draw[-latex] (0,0) -- (ketpluspi2) node[below,inner sep=.5mm] at (ketpluspi2) {\footnotesize $y$};
+  % Draw |psi>
+  \draw[-latex] (0,0) -- (psi) node[above]{\footnotesize $\ket{\psi}$};
+
+  % Draw the angles
+  \coordinate (origin) at (0,0);
+  {
+    % Will draw the angle/projection one the equatorial plane
+    \setDrawingPlane{0}{0}
+    % Draw the projection: cos is used to compute the length of the projection
+    \draw[current plane,dashed] (0,0) -- (-90+\psiLon:{cos(\psiLat)*\radiusSphere}) coordinate (psiProjectedEquat) -- (psi);
+    % Draw the angle
+    \pic[current plane, draw, text opacity=1,"\footnotesize $\phi$", angle eccentricity=2.2]{angle=ketplus--origin--psiProjectedEquat};
+  }
+  { \setLongitudinalDrawingPlane{\psiLon}
+    % Draw the angle
+    \pic[current plane, draw, text opacity=1,"\footnotesize $\theta$", angle eccentricity=1.5]{angle=psi--origin--ket0};
+  }
+\end{blochsphere}
+\end{document}

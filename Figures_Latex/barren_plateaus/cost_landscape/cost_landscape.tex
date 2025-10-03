@@ -1,0 +1,54 @@
+\documentclass[margin=10pt]{standalone}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\pgfplotsset{compat=newest}
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+
+\begin{document}
+
+\begin{tikzpicture}
+    \foreach \n [count=\i] in {2,5,10} {
+        \begin{axis}[
+                at={(\i*6cm-6cm,0)},  % Position each plot
+                view={45}{45},
+                width=\mainwidth/3,
+                height=5cm,
+                xlabel={$\theta_1$},
+                ylabel={$\theta_2$},
+                zlabel={\ifnum\i=1 Cost\fi},  % Show z-label only for the first plot
+                title={Cost Landscape for \n{} Qubits},
+                colormap/viridis,
+                zmin=-1,
+                zmax=1,
+                scale only axis,  % Ensures only the plot area is scaled, not labels
+                point meta min=-1,
+                point meta max=1,
+                grid=both,  % Add grid to the axis
+        ]
+            \addplot3[
+                surf,
+                %shader=interp,
+                mesh/cols=20,
+            ] table {cost_landscape_\n_wires.dat};
+        \end{axis}
+    }
+
+    % Add a separate axis for the colorbar
+    \begin{axis}[
+        hide axis,  % Hide the axis (no grid, ticks, or labels)
+        at={(18cm, 0)},  % Position it next to the last plot
+        width=0.3cm,  % Narrow colorbar
+        height=5cm,   % Same height as the plots
+        scale only axis,
+        colormap/viridis,
+        colorbar,     % Show only the colorbar
+        point meta min=-1,
+        point meta max=1,
+    ]
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}

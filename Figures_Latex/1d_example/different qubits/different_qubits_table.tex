@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{siunitx} % For scientific notation
+\sisetup{output-exponent-marker=\text{e}} % Scientific notation formatting
+
+\begin{document}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        N\_QUBITS & TOWER\_CHEBYSHEV (Mean $\pm$ Std) & FNN\_BASIS (Mean $\pm$ Std) \\
+        \midrule
+        2  & \num{5.1607e+00} $\pm$ \num{1.8399e-06} & \num{7.7442e-03} $\pm$ \num{1.4106e-02} \\
+        4  & \num{3.2035e-01} $\pm$ \num{3.6984e-07} & \num{9.7179e-05} $\pm$ \num{9.7179e-05} \\
+        6  & \num{1.8885e-05} $\pm$ \num{2.3360e-05} & \num{8.8285e-06} $\pm$ \num{8.8285e-06} \\
+        8  & \num{9.6682e-06} $\pm$ \num{1.2263e-05} & \num{8.8918e-06} $\pm$ \num{8.8918e-06} \\
+        \bottomrule
+    \end{tabular}
+    \caption{Qubit Data: Mean $\pm$ Standard Deviation for Tower Chebyshev and FNN Basis}
+    \label{tab:qubit_combined}
+\end{table}
+
+\end{document}

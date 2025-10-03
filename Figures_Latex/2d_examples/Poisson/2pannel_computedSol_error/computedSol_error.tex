@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\pgfplotsset{
+    colormap={magma_inverted}{
+        rgb255=(252,253,191)
+        rgb255=(254,194,135)
+        rgb255=(251,135,97)
+        rgb255=(229,80,100)
+        rgb255=(181,54,122)
+        rgb255=(129,37,129)
+        rgb255=(79,18,123)
+        rgb255=(28,16,68)
+        rgb255=(0,0,4)
+    }
+}
+
+\begin{document}
+\begin{tikzpicture}
+
+\begin{axis}[
+  name=plot1,
+  width=0.4\textwidth,
+  height=0.45\textwidth,
+  title={Computed Solution},
+  colorbar,
+  colormap/viridis,
+  colorbar style={
+    at={(1.1,1)},
+    anchor=north west,
+    height=0.9*\pgfkeysvalueof{/pgfplots/parent axis height},
+  },
+  axis equal image,
+  view={0}{90},
+]
+\addplot3[
+  surf,
+  shader=interp,
+  mesh/cols=25,
+  mesh/rows=50,
+  mesh/ordering=rowwise,
+]
+table [x=x, y=y, z=model_fnn_4_qubits, col sep=space] {data.dat};
+\end{axis}
+
+\begin{axis}[
+  name=plot2,
+  at={(plot1.east)},
+  anchor=west,
+  xshift=2.1cm,
+  width=0.4\textwidth,
+  height=0.45\textwidth,
+  title={Absolute Difference},
+  colorbar,
+  colormap name= magma_inverted,
+%   colorbar style={
+%     at={(1.1,1)},
+%     anchor=north west,
+%     height=0.9*\pgfkeysvalueof{/pgfplots/parent axis height},
+%   },
+  view={00}{90},
+  axis equal image,
+]
+\addplot3[
+  surf,
+  shader=interp,
+  mesh/cols=25,
+  mesh/rows=50,
+  mesh/ordering=rowwise,
+]
+table [
+  x=x,
+  y=y,
+  z expr = {abs(\thisrow{ref_solution} - \thisrow{model_fnn_4_qubits})},
+  col sep=space
+] {data.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

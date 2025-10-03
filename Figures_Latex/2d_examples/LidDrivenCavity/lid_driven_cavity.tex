@@ -1,0 +1,159 @@
+\documentclass[margin=5pt]{standalone}
+%\documentclass[]{article}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=newest}
+
+
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\pgfplotsset{
+    colormap={magma_inverted}{
+        rgb255=(252,253,191)
+        rgb255=(254,194,135)
+        rgb255=(251,135,97)
+        rgb255=(229,80,100)
+        rgb255=(181,54,122)
+        rgb255=(129,37,129)
+        rgb255=(79,18,123)
+        rgb255=(28,16,68)
+        rgb255=(0,0,4)
+    }
+}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+
+
+\begin{document}
+
+\begin{tikzpicture}
+    \begin{axis}[name=plot1, width=0.4\mainwidth, height=0.7\mainwidth, at={(0,0)},
+            xlabel={Iteration},
+            ylabel={Loss},
+            legend pos=north east,
+            grid=major,
+            ymode=log,
+            legend style={nodes={scale=0.8, transform shape}}]
+
+        \addplot[
+            color=color1,
+            line width=1.5pt,
+        ] table [x=idx, y=loss_hist, col sep=space] {loss_history.dat};
+        \addlegendentry{Loss}
+
+        \addplot[
+            color=color2,
+            line width=1.5pt,
+        ] table [x=idx, y=u_mag_loss, col sep=space] {loss_history.dat};
+        \addlegendentry{$\| u_{\text{TE-QPINN}} - u_{\text{ref}} \|_2$}
+
+        \addplot[
+            color=color3,
+            line width=1.5pt,
+        ] table [x=idx, y=p_loss, col sep=space] {loss_history.dat};
+        \addlegendentry{$\| p_{\text{TE-QPINN}} - p_{\text{ref}} \|_2$}
+    \end{axis}
+    
+    \begin{axis}[name=plot2, width=0.33\mainwidth, height=0.33\mainwidth, at={(0.40\mainwidth,0.35\mainwidth)},
+        view={0}{90},
+        title=${u_{\text{mag.,TE-QPINN}}}$,
+        xlabel=$x$,
+        ylabel=$y$,
+        colorbar,
+        colorbar/width=2mm,
+        colormap name=viridis,
+        point meta min=0, % Set the minimum value for the colorbar
+        point meta max=1, % Set the maximum value for the colorbar
+        colorbar style={
+            xshift=-3.0mm, % Move the colorbar closer to the plot
+            ytick={0, 1}, % Set the ticks on the colorbar
+        },
+        ]
+        % Content for the top-middle plot
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+        colormap name=viridis,
+    ] table [x=x, y=y, z = u_mag, col sep=space] {data.dat};
+    \end{axis}
+    
+    \begin{axis}[name=plot3, width=0.33\mainwidth, height=0.33\mainwidth, at={(0.75\mainwidth,0.35\mainwidth)},
+        view={0}{90},
+        title=${\| u_{\text{mag.,TE-QPINN}} - u_{\text{ref}} \|_2}$,
+        xlabel=$x$,
+        colorbar,
+        colorbar/width=2mm,
+        colorbar style={
+            xshift=-3.0mm,
+        },
+        ]
+        % Content for the top-right plot
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z = u_mag_diff, col sep=space] {data.dat};
+    \end{axis}
+    
+    \begin{axis}[name=plot4, width=0.33\mainwidth, height=0.33\mainwidth, at={(0.4\mainwidth,0)},
+        view={0}{90},
+        title={$p_{\text{TE-QPINN}}$},
+        xlabel=$x$,
+        ylabel=$y$,
+        colorbar,
+        colormap name=viridis,
+        colorbar/width=2mm,
+        colorbar style={
+            xshift=-3.0mm,
+            %ytick={-15, 20}, % Set the ticks on the colorbar
+        },
+    ]
+        % Content for the bottom-middle plot
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+        colormap name=viridis,
+    ] table [x=x, y=y, z = p, col sep=space] {data.dat};
+    \end{axis}
+    
+    \begin{axis}[name=plot5, width=0.33\mainwidth, height=0.33\mainwidth, at={(0.75\mainwidth,0)},
+        view={0}{90},
+        xlabel=$x$,
+        title={$\| p_{\text{TE-QPINN}} - p_{\text{ref}} \|_2$},
+        colorbar,
+        colorbar/width=2mm,
+        colorbar style={
+            xshift=-3.0mm,
+        },
+        ]
+        % Content for the bottom-right plot
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z = p_diff, col sep=space] {data.dat};
+    \end{axis}
+\end{tikzpicture}
+
+\end{document}
+

@@ -1,0 +1,57 @@
+\documentclass[margin=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+
+\setlength{\textwidth}{460pt}% the default is 390pt so increase by 40pt
+
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    width=\textwidth, % Adjust the width of the plot
+    view={60}{30}, % Adjusts the view angle
+    axis equal,
+    axis equal, % Ensure all axes have equal length
+    ticks=none, % Remove ticks
+    hide x axis,
+    hide y axis,
+    hide z axis,
+    colormap/viridis, % Using the viridis colormap
+    colorbar, % Add a colorbar to visualize the gradient
+    colorbar style={
+      at = {(0.75,0.65)}, % Position of the colorbar
+      width=0.03\textwidth, % Width of the colorbar
+      height=0.2\textwidth, % Height of the colorbar
+      ytick={0, 1000}, % Ticks at 0, pi/2, and pi
+      yticklabels={$0$, $\pi$}, % Custom labels for the ticks
+    },
+    point meta min=0, % Minimum value for color scaling
+    point meta max=1000, % Adjust based on the number of points
+  ]
+    \addplot3[
+      scatter, % Enable color mapping based on meta values
+      scatter src=explicit, % Use explicit meta values for color mapping
+      mark options={
+        scale=0.8, draw opacity=0.5,
+      }, 
+      thick,
+      scatter/@pre marker code/.append style={
+        /pgfplots/mark options={fill opacity={ifthenelse(\thisrow{z} < 0, 0.2, 1)}}
+      }] table [x=x, y=y, z=z, meta=idx, col sep=space] {data_path.dat};
+
+        % Add a sphere
+  \addplot3[
+      samples=20, % Number of samples for sphere grid
+      domain=0:360, % Domain for azimuthal angle
+      y domain=0:180, % Domain for polar angle
+      surf, % Enable surface plot
+      %shader=smooth, % Flat shading
+      draw=none, % No outline for sphere surface
+      fill opacity=0.1, % Transparency for the sphere
+    ]
+    ({sin(y)*cos(x)}, {sin(y)*sin(x)}, {cos(y)}); % Parametric equations for the sphere
+  \end{axis}
+\end{tikzpicture}
+
+
+\end{document}

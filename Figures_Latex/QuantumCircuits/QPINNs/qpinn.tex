@@ -1,0 +1,17 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{quantikz}
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+
+
+\begin{document}
+\begin{quantikz}[]
+    \lstick{$\ket{0}$} & \gate[4,style={rounded corners,fill=gray!20, inner xsep=2pt}]{\text{Embedding}} &  \gate[4,style={rounded corners,fill=gray!20, inner xsep=2pt}]{\text{Variational Layer}} & \gate[4,style={rounded corners,fill=gray!20, inner xsep=2pt}]{\text{Variational Layer}} & \gate[4,style={rounded corners,fill=gray!20, inner xsep=2pt}]{\text{Variational Layer}}  & \meter{} \\
+    \lstick{$\ket{0}$} & &  &  & & \meter{} \\
+    \lstick{$\ket{0}$} & &  &  & & \meter{} \\
+    \lstick{$\ket{0}$} & &  &  & & \meter{} \\
+\end{quantikz}
+\end{document}
+

@@ -1,0 +1,65 @@
+\documentclass[margin=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{pgfplots}
+\usepackage{amsmath}  % Add this line to support \text command
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+% Define the colors
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+\begin{document}
+\pgfplotstableread[col sep=comma]{mean_values.csv}\datatable
+
+\begin{tikzpicture}
+% Define styles for consistent colors across plots
+\pgfplotsset{
+    cycle list={
+        {color1, line width=1.5pt},
+        {color2, line width=1.5pt},
+        {color3, line width=1.5pt},
+        {color4, line width=1.5pt},
+        {color5 ,line width=1.5pt},
+        {color6, line width=1.5pt},
+        {color7, line width=1.5pt},
+    }
+}
+% 3x3 grid of plots
+\foreach \qubits/\qubitindex in {2/0,4/1,8/2} {
+    \foreach \layers/\layerindex in {4/0,8/1,12/2} {
+        \begin{scope}[xshift=\layerindex*6cm, yshift=-\qubitindex*4.4cm]
+            \begin{axis}[
+                scale only axis,
+                width=5cm,
+                height=3cm,
+                title={\(\text{Qubits}: \qubits, \text{Layers}: \layers\)},
+                xlabel={\ifnum\qubitindex=2 Iteration\fi}, % Show xlabel only for layer index 0
+                ylabel={\ifnum\layerindex=0 Loss\fi}, % Show xlabel only for layer index 0
+                grid=major,
+                legend to name=grouplegend, % Important!
+                legend style={column sep=10pt, legend columns=-1,},
+                xmin = 0,
+                xmax = 51,
+                ymin = 0,
+                ymax = 0.8,
+                %ymode=log,
+            ]
+            % Plot data for each method
+            \foreach \method in {Random,IdentityBlocks,One IdentityBlock,Xavier Uniform,Xavier Normal} {
+                \addplot table[x=idx, y=\method_\qubits_\layers] {\datatable};
+                \expandafter\addlegendentry\expandafter{\method}
+            }
+            
+            \end{axis}
+        \end{scope}
+    }
+}
+\node at (8,4.5) {\pgfplotslegendfromname{grouplegend}};
+\end{tikzpicture}
+\end{document}

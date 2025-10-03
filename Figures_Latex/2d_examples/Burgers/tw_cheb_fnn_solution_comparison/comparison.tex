@@ -1,0 +1,157 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+
+
+\pgfplotsset{colormap={inferno}{
+    rgb(0)=(0.001462, 0.000466, 0.013866),
+    rgb(15)=(0.037668, 0.025921, 0.132232),
+    rgb(30)=(0.116656, 0.047574, 0.272321),
+    rgb(45)=(0.217949, 0.036615, 0.383522),
+    rgb(60)=(0.316282, 0.053490, 0.425116),
+    rgb(75)=(0.410113, 0.087896, 0.433098),
+    rgb(90)=(0.503493, 0.121575, 0.423356),
+    rgb(105)=(0.596940, 0.154848, 0.398125),
+    rgb(120)=(0.688653, 0.192239, 0.357603),
+    rgb(135)=(0.775059, 0.239667, 0.303526),
+    rgb(150)=(0.851384, 0.302260, 0.239636),
+    rgb(165)=(0.912966, 0.381636, 0.169755),
+    rgb(180)=(0.956852, 0.475356, 0.094695),
+    rgb(195)=(0.981895, 0.579392, 0.026250),
+    rgb(210)=(0.987464, 0.690366, 0.079990),
+    rgb(225)=(0.973088, 0.805409, 0.216877),
+    rgb(240)=(0.947594, 0.917399, 0.410665),
+    rgb(255)=(0.988362, 0.998364, 0.644924),
+    }} 
+
+\pgfplotsset{
+    colormap={magma_inverted}{
+        rgb255=(252,253,191)
+        rgb255=(254,194,135)
+        rgb255=(251,135,97)
+        rgb255=(229,80,100)
+        rgb255=(181,54,122)
+        rgb255=(129,37,129)
+        rgb255=(79,18,123)
+        rgb255=(28,16,68)
+        rgb255=(0,0,4)
+    }
+}
+\begin{document}
+
+\begin{tikzpicture}
+
+    \begin{axis}[
+        name=plot1,
+        width=6cm, height=6cm,
+        title=Tower Chebyshev 4 Qubits,
+        view={0}{90},
+        colormap name= inferno,
+        colorbar,
+        xlabel=$t$,
+        ylabel=$x$,
+        ylabel shift = -10pt,
+        point meta min=-1,
+        point meta max=1,
+        colorbar style= {
+            ytick={-1,0,1},
+            yticklabels={$-1$,$0$,$1$},
+        }
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_chebyshev, col sep=space] {tower_cheb_comp.dat};
+    \end{axis}
+
+    \begin{axis}[
+        name=plot2,
+        at={(plot1.right of south east)}, 
+        anchor=south west,
+        xshift=2.5cm,
+        width=6cm, height=6cm,
+        title={$\left| u(t,x)_{\text{ref.}} - u_{\text{Tower Cheb.}}(t,x) \right|$},
+        xlabel=$x$,
+        ylabel=$y$,
+        ylabel shift = -10pt,
+        view={0}{90},
+        colorbar,
+        colormap name = magma_inverted,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z expr = {abs(\thisrow{solution} - \thisrow{tower_chebyshev})}, col sep=space] {tower_cheb_comp.dat};
+  
+    \end{axis}
+
+    \begin{axis}[
+        name=plot3,
+        at={(plot1.below south west)}, 
+        anchor=north west,
+        yshift=-1.5cm,
+        width=6cm, height=6cm,
+        title={TE-QPINN 4 Qubits},
+        xlabel=$t$,
+        ylabel=$x$,
+        ylabel shift = -10 pt,
+        view={0}{90},
+        colormap name= inferno,
+        colorbar,
+        point meta min=-1,
+        point meta max=1,
+        colorbar style= {
+            ytick={-1,0,1},
+            yticklabels={$-1$,$0$,$1$},
+        }
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=fnn_basis, col sep=space] {fnn_basis_comp.dat};
+    \end{axis}
+
+    \begin{axis}[
+        name=plot4,
+        at={(plot3.right of south east)}, 
+        anchor=south west,
+        xshift=2.5cm,
+        width=6cm, height=6cm,
+        title={$\left| u(t,x)_{\text{ref.}} - u_{\text{TE-QPINN}}(t,x) \right|$},
+        xlabel=$t$,
+        ylabel=$x$,
+        ylabel shift = -10 pt,
+        view={0}{90},
+        colormap name = magma_inverted,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=50,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z expr = {abs(\thisrow{solution} - \thisrow{fnn_basis})}, col sep=space] {fnn_basis_comp.dat};
+    \end{axis}
+    
+\end{tikzpicture}
+
+
+\end{document}

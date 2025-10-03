@@ -1,0 +1,73 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=newest}
+\usepackage{subcaption}
+\usetikzlibrary{plotmarks}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\begin{document}
+\begin{tikzpicture}
+\begin{groupplot}[
+    group style={
+        group size=3 by 1,
+        horizontal sep=0.1\mainwidth,
+        vertical sep=2cm,
+    },
+    width=0.4\mainwidth,
+    height=0.3\mainwidth,
+    grid=major,
+]
+\nextgroupplot[
+    legend style={
+        at={($(0.5,-0.4)$)},
+        anchor=north,
+        legend columns=4,
+        /tikz/every even column/.append style={column sep=0.5cm},
+    },
+    legend to name=named,
+    ymode=log,
+    xmode=log,
+    xlabel=Number of shots,
+    ylabel=MSE,
+]
+
+\addplot[only marks, mark=diamond*, mark options={color=color1}] table [x=shots, y=error_shots, col sep=space] {data_shots.dat};
+\addplot[only marks, mark=triangle*, mark options={color=color2}] table [x=shots, y=error_noise, col sep=space] {data_shots.dat};
+\addplot[only marks, mark=asterisk, mark options={color=color3}] table [x=shots, y=error_real, col sep=space] {data_shots.dat};
+
+\legend{Simulated Ideal Shots,Simulated Noisy Shots, Real Device}
+
+
+\nextgroupplot[
+    xlabel=Number of variational layers,
+    ymode=log,
+]
+\addplot[only marks, mark=diamond*, mark options={color=color1}] table [x=layer, y=error_shots, col sep=space] {data_layers.dat};
+\addplot[only marks, mark=triangle*, mark options={color=color2}] table [x=layer, y=error_noise, col sep=space] {data_layers.dat};
+\addplot[only marks, mark=asterisk, mark options={color=color3}] table [x=layer, y=error_real, col sep=space] {data_layers.dat};
+
+
+\nextgroupplot[
+    xlabel=Utilization of QPU,
+    ymode=log,
+]
+\addplot[only marks, mark=triangle*, mark options={color=color2}] table [x=utilization, y=error_noise, col sep=space] {data_utilization.dat};
+\addplot[only marks, mark=asterisk, mark options={color=color3}] table [x=utilization, y=error_real, col sep=space] {data_utilization.dat};
+
+
+\end{groupplot}
+
+\node[below] at ($(group c1r1.south)!0.5!(group c3r1.south)-(0,1cm)$) {\ref{named}};
+
+\end{tikzpicture}
+\end{document}

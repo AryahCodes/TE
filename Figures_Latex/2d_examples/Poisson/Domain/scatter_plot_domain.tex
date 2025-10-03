@@ -1,0 +1,37 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+
+
+\begin{document}
+
+\begin{tikzpicture}
+  \begin{axis}[
+    scatter/classes={
+      0={mark=x,blue},       % Circle and blue for Domain
+      1={mark=square*,red}, % Square and red for Dirichlet BC
+      2={mark=triangle*,green}}, % Triangle and green for Neumann BC
+    xlabel={$x$},
+    ylabel={$y$},
+    title={Collocation points of the domain},
+    axis equal,
+    width= 0.8\mainwidth,
+    height= 0.4\mainwidth,
+    legend pos=outer north east,
+  ]
+
+    % Read the data from the file and plot
+    \addplot[scatter, only marks, scatter src=explicit symbolic] 
+    table[meta=type] {domain_data.dat};
+
+    \legend{Domain, Dirichlet BC, Neumann BC}
+    
+  \end{axis}
+\end{tikzpicture}
+
+\end{document}
+

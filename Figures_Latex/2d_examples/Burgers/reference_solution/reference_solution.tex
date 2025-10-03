@@ -1,0 +1,57 @@
+\documentclass{standalone}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+
+\pgfplotsset{colormap={inferno}{
+    rgb(0)=(0.001462, 0.000466, 0.013866),
+    rgb(15)=(0.037668, 0.025921, 0.132232),
+    rgb(30)=(0.116656, 0.047574, 0.272321),
+    rgb(45)=(0.217949, 0.036615, 0.383522),
+    rgb(60)=(0.316282, 0.053490, 0.425116),
+    rgb(75)=(0.410113, 0.087896, 0.433098),
+    rgb(90)=(0.503493, 0.121575, 0.423356),
+    rgb(105)=(0.596940, 0.154848, 0.398125),
+    rgb(120)=(0.688653, 0.192239, 0.357603),
+    rgb(135)=(0.775059, 0.239667, 0.303526),
+    rgb(150)=(0.851384, 0.302260, 0.239636),
+    rgb(165)=(0.912966, 0.381636, 0.169755),
+    rgb(180)=(0.956852, 0.475356, 0.094695),
+    rgb(195)=(0.981895, 0.579392, 0.026250),
+    rgb(210)=(0.987464, 0.690366, 0.079990),
+    rgb(225)=(0.973088, 0.805409, 0.216877),
+    rgb(240)=(0.947594, 0.917399, 0.410665),
+    rgb(255)=(0.988362, 0.998364, 0.644924),
+    }} 
+
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+    view={0}{90},
+    colormap name= inferno,
+    colorbar,
+    xlabel=$t$,
+    ylabel=$x$,
+    zlabel=$z$,
+    scale only axis=true,
+    % set `width' and `height' to the desired values
+    width=0.6\textwidth,
+    height=0.4\textwidth,
+]
+\addplot3[
+    surf,
+    shader=interp,
+    mesh/cols=50,
+    mesh/rows=80,
+    mesh/ordering=rowwise,
+] table [col sep=space] {data.dat};
+\end{axis}
+\end{tikzpicture}
+\end{document}

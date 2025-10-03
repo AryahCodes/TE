@@ -1,0 +1,24 @@
+\documentclass[varwidth=\maxdimen, margin=10pt]{standalone}
+
+\usepackage{booktabs}
+\usepackage{siunitx}
+
+\begin{document}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+Embedding Function & \multicolumn{3}{c}{Number of Layers} \\
+& 3 & 5 & 8 \\
+& Mean $\pm$ Std. Dev. & Mean $\pm$ Std. Dev. & Mean $\pm$ Std. Dev. \\
+\midrule
+Tower-Chebyshev & $\num{0.36e0}\pm\num{0.08e0}$ & $\num{3.20347e-1}\pm\num{3.25711e-7}$ & $\num{3.20346e-1}\pm\num{5.07321e-7}$ \\
+FNN-Basis       & $\num{2.70305e-5}\pm\num{2.11087e-5}$ & $\num{6.30667e-5}\pm\num{7.20515e-5}$ & $\num{7.37241e-5}\pm\num{8.07879e-5}$ \\
+\bottomrule
+\end{tabular}
+\caption{Mean and standard deviation of embedding functions for different number of layers.}
+
+\end{table}
+
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+% Define the colors
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+
+\begin{document}
+
+\begin{tikzpicture}
+ \begin{groupplot}[
+ group style={
+ group size=2 by 2,
+ horizontal sep=2cm,
+ vertical sep=2cm,
+ },
+ width=0.7\mainwidth,
+ height=6cm,
+ xlabel={Iteration},
+ ylabel={Loss},
+ legend style={at={(0.5,-0.2)}, anchor=north, legend columns=-1,row sep=0.5cm},
+ legend to name=grouplegend,
+ grid=major,
+ ymode=log,
+ xmode=log,
+]
+\nextgroupplot[title={4 Qubits TE-QPINN},ymin=0.000001, ymax=100]
+\addplot[line width=1.5pt, mark=none, color=color1] table[x=idx, y=cobyla_mean] {cobyla_data_4_FFN_reduced.dat};
+\addplot[line width=1.5pt, mark=none, color=color2] table[x=idx, y=adam_mean] {adam_data_4_FFN.dat};
+\addplot[line width=1.5pt, mark=none, color=color3] table[x=idx, y=lbfgs_mean] {lbfgs_data_4_FFN.dat};
+\nextgroupplot[title={4 Qubits with Tower-Chebyshev Embedding},ymin=0.000001, ymax=100]
+\addplot[line width=1.5pt, mark=none, color=color1] table[x=idx, y=cobyla_mean] {cobyla_data_4_reduced.dat};
+\addplot[line width=1.5pt, mark=none, color=color2] table[x=idx, y=adam_mean] {adam_data_4.dat};
+\addplot[line width=1.5pt, mark=none, color=color3] table[x=idx, y=lbfgs_mean] {lbfgs_data_4.dat};
+\nextgroupplot[title={8 Qubits TE-QPINN},ymin=0.000001, ymax=100]
+\addplot[line width=1.5pt, mark=none, color=color1] table[x=idx, y=cobyla_mean] {cobyla_data_8_FFN_reduced.dat};
+\addplot[line width=1.5pt, mark=none, color=color2] table[x=idx, y=adam_mean] {adam_data_8_FFN.dat};
+\addplot[line width=1.5pt, mark=none, color=color3] table[x=idx, y=lbfgs_mean] {lbfgs_data_8_FFN.dat};
+\nextgroupplot[title={8 Qubits with Tower-Chebyshev Embedding},ymin=0.000001, ymax=100]
+\addplot[line width=1.5pt, mark=none, color=color1] table[x=idx, y=cobyla_mean] {cobyla_data_8_reduced.dat};
+\addplot[line width=1.5pt, mark=none, color=color2] table[x=idx, y=adam_mean] {adam_data_8.dat};
+\addplot[line width=1.5pt, mark=none, color=color3] table[x=idx, y=lbfgs_mean] {lbfgs_data_8.dat};
+
+\legend{COBYLA, Adam, L-BFGS}
+\end{groupplot}
+
+% Place the legend below the plots
+\node at ($(group c1r2.south west)!0.5!(group c2r2.south east)-(0,1.5cm)$) {\ref{grouplegend}};
+
+\end{tikzpicture}
+
+\end{document}

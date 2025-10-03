@@ -1,0 +1,16 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{quantikz}
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{440pt}
+
+\begin{document}
+
+\begin{quantikz}[]
+    \lstick{$\ket{0}$} & \gate{R_x(\theta_{111})}\gategroup[4,steps=6,style={dashed,rounded corners,fill=gray!20, inner xsep=2pt},background,]{\text{HEA Layer 1}} & \gate{R_y(\theta_{112})} & \gate{R_z(\theta_{113})} & \ctrl{1} & \qw      & \qw      & \gate{R_x(\theta_{211})}\gategroup[4,steps=6,style={dashed,rounded corners,fill=gray!20, inner xsep=2pt},background,]{\text{HEA Layer 2}} & \gate{R_y(\theta_{212})} & \gate{R_z(\theta_{213})} & \ctrl{1} & \qw      & \qw      & \meter{} \\
+    \lstick{$\ket{0}$} & \gate{R_x(\theta_{121})} & \gate{R_y(\theta_{122})} & \gate{R_z(\theta_{123})} & \targ{}  & \ctrl{1} & \qw      & \gate{R_x(\theta_{221})} & \gate{R_y(\theta_{222})} & \gate{R_z(\theta_{223})} & \targ{}  & \ctrl{1} & \qw      & \meter{} \\
+    \lstick{$\ket{0}$} & \gate{R_x(\theta_{131})} & \gate{R_y(\theta_{132})} & \gate{R_z(\theta_{133})} & \qw      & \targ{}  & \ctrl{1} & \gate{R_x(\theta_{231})} & \gate{R_y(\theta_{232})} & \gate{R_z(\theta_{233})} & \qw      & \targ{}  & \ctrl{1} & \meter{} \\
+    \lstick{$\ket{0}$} & \gate{R_x(\theta_{141})} & \gate{R_y(\theta_{142})} & \gate{R_z(\theta_{143})} & \qw      & \qw      & \targ{}  & \gate{R_x(\theta_{241})} & \gate{R_y(\theta_{242})} & \gate{R_z(\theta_{243})} & \qw      & \qw      & \targ{}  & \meter{}
+\end{quantikz}
+\end{document}

@@ -1,0 +1,224 @@
+\documentclass{article}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=newest}
+
+\usepackage{amsmath}
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+\begin{document}
+\begin{figure}
+\centering
+\begin{tikzpicture}
+
+    % First plot (Rx1)
+    \begin{axis}[
+        name=plot1,
+        width=6cm, height=6cm,
+        title={$\phi_1(x,y)x$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_0, col sep=space] {tower_cheb_data.csv};
+    \end{axis}
+
+    % Second plot (Rx2) to the right of the first one
+    \begin{axis}[
+        name=plot2,
+        at={(plot1.right of south east)}, 
+        anchor=south west,
+        xshift=2.25cm,
+        width=6cm, height=6cm,
+        title={$\phi_2(x,y)y$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_1, col sep=space] {tower_cheb_data.csv};
+    \end{axis}
+
+    % Third plot (Rx3) below the first one
+    \begin{axis}[
+        name=plot3,
+        at={(plot1.below south west)}, 
+        anchor=north west,
+        yshift=-1.5cm,
+        width=6cm, height=6cm,
+        title={$\phi_3(x,y)x$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_2, col sep=space] {tower_cheb_data.csv};
+    \end{axis}
+
+    % Fourth plot (Rx4) to the right of the third one
+    \begin{axis}[
+        name=plot4,
+        at={(plot3.right of south east)}, 
+        anchor=south west,
+        xshift=2.25cm,
+        width=6cm, height=6cm,
+        title={$\phi_4(x,y)y$},
+        xlabel={$x$},
+        ylabel={$y$},
+        view={0}{90},
+        colormap/viridis,
+        axis equal image,
+        colorbar,
+    ]
+    \addplot3[
+        surf,
+        shader=interp,
+        mesh/cols=25,
+        mesh/rows=50,
+        mesh/ordering=rowwise,
+    ] table [x=x, y=y, z=tower_3, col sep=space] {tower_cheb_data.csv};
+    \end{axis}
+    
+\end{tikzpicture}
+\caption{Tower Cheb embedding angles}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        % First plot (Rx1)
+        \begin{axis}[
+            name=plot1,
+            width=6cm, height=6cm,
+            title=Rx1,
+            view={0}{90},
+            colormap/viridis,
+            axis equal image,
+            colorbar,
+        ]
+        \addplot3[
+            surf,
+            shader=interp,
+            mesh/cols=25,
+            mesh/rows=50,
+            mesh/ordering=rowwise,
+        ] table [x=x, y=y, z=basis_0, col sep=space] {basis_data.csv};
+        \end{axis}
+        
+        % Second plot (Rx2) to the right of the first one
+        \begin{axis}[
+            name=plot2,
+            at={(plot1.right of south east)}, 
+            anchor=south west,
+            xshift=2.25cm,
+            width=6cm, height=6cm,
+            title=Rx2,
+            view={0}{90},
+            colormap/viridis,
+            axis equal image,
+            colorbar,
+        ]
+        \addplot3[
+            surf,
+            shader=interp,
+            mesh/cols=25,
+            mesh/rows=50,
+            mesh/ordering=rowwise,
+        ] table [x=x, y=y, z=basis_1, col sep=space] {basis_data.csv};
+        \end{axis}
+        
+        % Third plot (Rx3) below the first one
+        \begin{axis}[
+            name=plot3,
+            at={(plot1.below south west)}, 
+            anchor=north west,
+            yshift=-1.5cm,
+            width=6cm, height=6cm,
+            title=Rx3,
+            view={0}{90},
+            colormap/viridis,
+            axis equal image,
+            colorbar,
+        ]
+        \addplot3[
+            surf,
+            shader=interp,
+            mesh/cols=25,
+            mesh/rows=50,
+            mesh/ordering=rowwise,
+        ] table [x=x, y=y, z=basis_2, col sep=space] {basis_data.csv};
+        \end{axis}
+        
+        % Fourth plot (Rx4) to the right of the third one
+        \begin{axis}[
+            name=plot4,
+            at={(plot3.right of south east)}, 
+            anchor=south west,
+            xshift=2.25cm,
+            width=6cm, height=6cm,
+            title=Rx4,
+            view={0}{90},
+            colormap/viridis,
+            colorbar,
+            axis equal image,
+        ]
+        \addplot3[
+            surf,
+            shader=interp,
+            mesh/cols=25,
+            mesh/rows=50,
+            mesh/ordering=rowwise,
+        ] table [x=x, y=y, z=basis_3, col sep=space] {basis_data.csv};
+        \end{axis}
+        
+        % % Single colorbar to the right of all plots
+        % \begin{axis}[
+        %     hide axis,
+        %     scale only axis,
+        %     height=0pt,
+        %     width=0pt,
+        %     colorbar right,
+        %     colormap/viridis,
+        %     point meta min=0,
+        %     point meta max=1,
+        %     colorbar style={
+        %         height=12cm,
+        %         yshift=-1.5cm
+        %     }
+        % ]
+        % \end{axis}
+        
+    \end{tikzpicture}
+    \caption{FNN basis functions}
+\end{figure}
+
+
+\end{document}

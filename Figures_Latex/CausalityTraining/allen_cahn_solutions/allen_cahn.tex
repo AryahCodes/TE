@@ -1,0 +1,99 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{pgfplots}
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=newest}
+\usepackage{subcaption}
+
+\usepackage{palatino}
+\newlength{\mainwidth}
+\setlength{\mainwidth}{460pt}
+
+
+\pgfplotsset{
+    colormap={seismic}{
+        rgb255=(0,0,76)
+        rgb255=(0,0,153)
+        rgb255=(0,0,229)
+        rgb255=(1,100,252)
+        rgb255=(102,178,255)
+        rgb255=(204,229,255)
+        rgb255=(251,252,253)
+        rgb255=(255,228,225)
+        rgb255=(255,177,172)
+        rgb255=(252,99,98)
+        rgb255=(229,0,0)
+        rgb255=(153,0,0)
+        rgb255=(76,0,0)
+    }
+}
+
+\definecolor{color1}{HTML}{1b9e77}
+\definecolor{color2}{HTML}{d95f02}
+\definecolor{color3}{HTML}{7570b3}
+\definecolor{color4}{HTML}{e7298a}
+\definecolor{color5}{HTML}{66a61e}
+\definecolor{color6}{HTML}{e6ab02}
+\definecolor{color7}{HTML}{a6761d}
+
+\begin{document}
+
+\begin{tikzpicture}
+\begin{groupplot}[
+    group style={
+        group size=3 by 1,
+        horizontal sep=0.05\mainwidth,
+    },
+    width=0.4\mainwidth,
+    height=0.3\mainwidth,
+    view={0}{90},
+    xlabel=$t$,
+    colormap name=seismic,
+    zmin=-1, zmax=1,
+    colorbar style={
+        at={(3.5,.98)},
+        height=0.2\mainwidth,
+        title={},
+        ticklabel style={font=\footnotesize},
+    },
+]
+
+\nextgroupplot[
+    ylabel=$x$,
+    title={Reference Solution},
+    colorbar,
+]
+\addplot3[
+    surf,
+    shader=interp,
+    mesh/cols=50,
+    mesh/rows=40,
+    mesh/ordering=rowwise,
+] table [x=x, y=y, z=ref_solution, col sep=space] {solution_causality.dat};
+
+\nextgroupplot[
+    title={Causality Training},
+    yticklabels={,,},
+]
+\addplot3[
+    surf,
+    shader=interp,
+    mesh/cols=50,
+    mesh/rows=40,
+    mesh/ordering=rowwise,
+] table [x=x, y=y, z=model_fnn_4_qubits, col sep=space] {solution_causality.dat};
+
+\nextgroupplot[
+    title={Normal Training},
+    yticklabels={,,},
+]
+\addplot3[
+    surf,
+    shader=interp,
+    mesh/cols=50,
+    mesh/rows=40,
+    mesh/ordering=rowwise,
+] table [x=x, y=y, z=classical_solution, col sep=space] {solution_normal.dat};
+
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

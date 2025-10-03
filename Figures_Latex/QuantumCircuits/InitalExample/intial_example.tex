@@ -1,0 +1,11 @@
+\documentclass[margin=5pt]{standalone}
+\usepackage{quantikz}
+
+\begin{document}
+    \begin{quantikz}
+    \lstick{\ket{0}} & \gate{H} & \ctrl{1} & & \meter{}\\
+    \lstick{\ket{0}} &          & \targ{}  & & \meter{}
+     \end{quantikz}
+\end{document}
+
+
