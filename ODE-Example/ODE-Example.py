@@ -139,14 +139,14 @@ data = np.zeros((5,4,2)) # layer, qubits, (loss, MSE_re)
 
 for EMBEDDING in EMBEDDING_LIST:
     
-   for k,N_LAYERS in enumerate([1,3,5,7,10]):
-        for l,N_WIRES in enumerate([2, 4, 6, 8]):
+   for k,N_LAYERS in enumerate([1,3]):
+        for l,N_WIRES in enumerate([2, 4]):
             print(f"Embedding: {EMBEDDING} \t Layers: {N_LAYERS} \t Qubits: {N_WIRES}")
             
             tmp_loss = []
             tmp_mse_ref = []
             
-            for i in range(500):
+            for i in range(10):
                 
                 circuit_qnode = qml.QNode(circuit, device=qml.device("default.qubit", wires=N_WIRES))
                 theta = torch.rand(N_LAYERS, N_WIRES, 3, device=device, requires_grad=True)
@@ -158,7 +158,7 @@ for EMBEDDING in EMBEDDING_LIST:
                     opt = torch.optim.LBFGS([theta], line_search_fn="strong_wolfe")
 
                 previous_loss = float('inf')
-                for i in range(50):
+                for i in range(20):
                     opt.step(closure)
                     print(f"Epoch {i}, Loss: {loss_fnc().item():.2E}", end="\r")
 
