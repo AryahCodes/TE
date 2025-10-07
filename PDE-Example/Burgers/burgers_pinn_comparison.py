@@ -129,7 +129,8 @@ def get_n_params(fnn_model):
 
 # %%
 ## Load Reference Solution
-u_interp = np.load(os.path.dirname(os.path.abspath(""))+ "/Burgers/burgers_reference_solution.npy", allow_pickle=True).item()
+base_dir = os.path.dirname(os.path.abspath(__file__))
+u_interp = np.load(os.path.join(base_dir, "burgers_reference_solution.npy"), allow_pickle=True).item()
 
 def reference_solution(data):
     output = np.zeros(data.shape[0])
