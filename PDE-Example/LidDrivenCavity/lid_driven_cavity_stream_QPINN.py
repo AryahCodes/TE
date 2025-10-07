@@ -15,16 +15,16 @@ torch.set_num_threads(30)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # QNet Parameter
-N_WIRES = 6
-N_LAYERS = 5
+N_WIRES = 4
+N_LAYERS = 3
 
 # Domain Parameter
-X_COLLOC_POINTS = 35
-Y_COLLOC_POINTS = 35
-BOUNDARY_SCALE = 5e1
+X_COLLOC_POINTS = 20
+Y_COLLOC_POINTS = 20
+BOUNDARY_SCALE = 3e1
 
 # FNN Basis Net
-NEURONS_FNN = 8
+NEURONS_FNN = 6
 
 # PDE Parameter
 REYNOLDS_NUMBER = 10.0
@@ -222,7 +222,7 @@ loss_reference_u_mag = []
 
 # %%
 ## Trainings loop
-for i in range(150):
+for i in range(50):
     start = datetime.datetime.now()
     opt.step(closure)
 
@@ -334,22 +334,3 @@ for i in range(len(loss_hist)):
     print(f"{i} {loss_hist[i]} {loss_reference_u_mag[i]} {loss_reference_p[i]}")
 
 # %%
-
-if __name__ == "__main__":
-    import sys
-    # If you pass '--plot-only', skip the training loop
-    if "--plot-only" in sys.argv:
-        print("Plot-only mode: skipping training loop.")
-        # Skip directly to the plotting section
-        # You can load any previous log file or saved state here if desired
-    else:
-        # Normal behavior
-        for i in range(150):
-            start = datetime.datetime.now()
-            opt.step(closure)
-            loss_hist.append(loss_fnc().detach().cpu().numpy())
-            error_p, error_u_mag = compute_l2_error()
-            loss_reference_p.append(error_p.detach().cpu().numpy())
-            loss_reference_u_mag.append(error_u_mag.detach().cpu().numpy())
-            print(f"Iteration: {i} | Loss: {loss_hist[-1]:.8e} | l2 Error P: {error_p:.8e} | l2 Error U Mag: {error_u_mag:.8e}")
-            print(f"\t Iteration duration: {(datetime.datetime.now()-start).total_seconds()}")
