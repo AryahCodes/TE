@@ -162,6 +162,8 @@ def model(x):
 
 ref_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy")
 u_data = np.load(ref_path, allow_pickle=True)
+if isinstance(u_data, np.ndarray) and u_data.dtype == object and u_data.size == 1:
+    u_data = u_data.item()
 
 if isinstance(u_data, dict):
     u_grid = next((v for v in u_data.values() if isinstance(v, np.ndarray)), np.random.rand(100, 100))
