@@ -19,12 +19,12 @@ N_WIRES = 6
 N_LAYERS = 5
 
 # Domain Parameter
-X_COLLOC_POINTS = 50
-Y_COLLOC_POINTS = 50
-BOUNDARY_SCALE = 10e1
+X_COLLOC_POINTS = 35
+Y_COLLOC_POINTS = 35
+BOUNDARY_SCALE = 5e1
 
 # FNN Basis Net
-NEURONS_FNN = 10
+NEURONS_FNN = 8
 
 # PDE Parameter
 REYNOLDS_NUMBER = 10.0
@@ -222,7 +222,7 @@ loss_reference_u_mag = []
 
 # %%
 ## Trainings loop
-for i in range(500):
+for i in range(150):
     start = datetime.datetime.now()
     opt.step(closure)
 
