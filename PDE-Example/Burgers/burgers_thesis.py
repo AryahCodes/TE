@@ -141,22 +141,55 @@ def model(x):
 
 # %%
 ## Load Reference Solution
-u_data = np.load(os.path.dirname(os.path.abspath(""))+ "/Burgers/burgers_reference_solution.npy", allow_pickle=True)
-u_interp = u_data if isinstance(u_data, np.ndarray) else None
+# u_data = np.load(os.path.dirname(os.path.abspath(""))+ "/Burgers/burgers_reference_solution.npy", allow_pickle=True)
+# u_interp = u_data if isinstance(u_data, np.ndarray) else None
+
+# def reference_solution(data):
+#     output = np.zeros(data.shape[0])
+#     if callable(u_interp):
+#         # Normal path if u_interp is a RegularGridInterpolator
+#         for i in range(data.shape[0]):
+#             output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+#     else:
+#         # Fallback if u_interp is just a NumPy array
+#         # Simply reuse the numeric data (or flatten if needed)
+#         output[:] = u_interp.flatten()[:data.shape[0]]
+#     return output
+
+# reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
+
+try:
+    u_interp = np.load(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy"),
+        allow_pickle=True
+    ).item()
+    use_interp = True
+except Exception:
+    print("⚠️ Warning: Could not load interpolator, using numeric fallback mode.")
+    u_interp = np.load(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy"),
+        allow_pickle=True
+    )
+    use_interp = False
 
 def reference_solution(data):
-    output = np.zeros(data.shape[0])
-    if callable(u_interp):
-        # Normal path if u_interp is a RegularGridInterpolator
+    if use_interp and callable(u_interp):
+        # Use interpolator (original behavior)
+        output = np.zeros(data.shape[0])
         for i in range(data.shape[0]):
             output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+        return output
     else:
-        # Fallback if u_interp is just a NumPy array
-        # Simply reuse the numeric data (or flatten if needed)
-        output[:] = u_interp.flatten()[:data.shape[0]]
-    return output
+        # Fallback: treat .npy as numerical matrix
+        arr = np.array(u_interp)
+        flat = arr.flatten()
+        if flat.size < data.shape[0]:
+            reps = int(np.ceil(data.shape[0] / flat.size))
+            flat = np.tile(flat, reps)
+        return flat[:data.shape[0]]
 
 reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
+
 
 # %%
 ## Define loss terms
