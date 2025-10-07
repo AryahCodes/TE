@@ -164,23 +164,28 @@ warnings.filterwarnings("ignore", category=UserWarning)
 ref_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy")
 u_data = np.load(ref_path, allow_pickle=True)
 
-# Try to extract numeric grid from dict or tuple structure
+# Try to extract a numeric grid from whatever structure is stored
 if isinstance(u_data, dict):
-    # legacy pickle contained { "interp": ..., "grid": np.array(...) }
+    # Grab first numeric array inside dict
     u_grid = next((v for v in u_data.values() if isinstance(v, np.ndarray)), None)
-elif isinstance(u_data, (list, tuple)) and isinstance(u_data[0], np.ndarray):
-    u_grid = u_data[0]
+elif isinstance(u_data, (list, tuple)):
+    # Handle tuple/list with arrays
+    u_grid = next((v for v in u_data if isinstance(v, np.ndarray)), None)
 else:
     u_grid = np.array(u_data)
 
+# Convert to numeric safely
+u_grid = np.array(u_grid, dtype=np.float64)
+u_flat = u_grid.flatten()
+
 def reference_solution(data):
-    arr = u_grid.flatten()
+    arr = u_flat
     if arr.size < data.shape[0]:
         reps = int(np.ceil(data.shape[0] / arr.size))
         arr = np.tile(arr, reps)
-    return arr[:data.shape[0]]
+    return arr[:data.shape[0]].astype(np.float32)
 
-reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
+reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), dtype=torch.float32, device=device)
 
 
 # %%
