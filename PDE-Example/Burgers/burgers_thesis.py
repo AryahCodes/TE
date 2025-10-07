@@ -141,7 +141,8 @@ def model(x):
 
 # %%
 ## Load Reference Solution
-u_interp = np.load(os.path.dirname(os.path.abspath(""))+ "/Burgers/burgers_reference_solution.npy", allow_pickle=True).item()
+u_data = np.load(os.path.dirname(os.path.abspath(""))+ "/Burgers/burgers_reference_solution.npy", allow_pickle=True)
+u_interp = u_data if isinstance(u_data, np.ndarray) else None
 
 def reference_solution(data):
     output = np.zeros(data.shape[0])
