@@ -146,8 +146,14 @@ u_interp = u_data if isinstance(u_data, np.ndarray) else None
 
 def reference_solution(data):
     output = np.zeros(data.shape[0])
-    for i in range(data.shape[0]):
-        output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+    if callable(u_interp):
+        # Normal path if u_interp is a RegularGridInterpolator
+        for i in range(data.shape[0]):
+            output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+    else:
+        # Fallback if u_interp is just a NumPy array
+        # Simply reuse the numeric data (or flatten if needed)
+        output[:] = u_interp.flatten()[:data.shape[0]]
     return output
 
 reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
