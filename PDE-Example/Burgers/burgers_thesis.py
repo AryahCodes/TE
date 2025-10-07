@@ -158,35 +158,27 @@ def model(x):
 
 # reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
 
-try:
-    u_interp = np.load(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy"),
-        allow_pickle=True
-    ).item()
-    use_interp = True
-except Exception:
-    print("⚠️ Warning: Could not load interpolator, using numeric fallback mode.")
-    u_interp = np.load(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy"),
-        allow_pickle=True
-    )
-    use_interp = False
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+
+ref_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy")
+u_data = np.load(ref_path, allow_pickle=True)
+
+# Try to extract numeric grid from dict or tuple structure
+if isinstance(u_data, dict):
+    # legacy pickle contained { "interp": ..., "grid": np.array(...) }
+    u_grid = next((v for v in u_data.values() if isinstance(v, np.ndarray)), None)
+elif isinstance(u_data, (list, tuple)) and isinstance(u_data[0], np.ndarray):
+    u_grid = u_data[0]
+else:
+    u_grid = np.array(u_data)
 
 def reference_solution(data):
-    if use_interp and callable(u_interp):
-        # Use interpolator (original behavior)
-        output = np.zeros(data.shape[0])
-        for i in range(data.shape[0]):
-            output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
-        return output
-    else:
-        # Fallback: treat .npy as numerical matrix
-        arr = np.array(u_interp)
-        flat = arr.flatten()
-        if flat.size < data.shape[0]:
-            reps = int(np.ceil(data.shape[0] / flat.size))
-            flat = np.tile(flat, reps)
-        return flat[:data.shape[0]]
+    arr = u_grid.flatten()
+    if arr.size < data.shape[0]:
+        reps = int(np.ceil(data.shape[0] / arr.size))
+        arr = np.tile(arr, reps)
+    return arr[:data.shape[0]]
 
 reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
 
