@@ -139,31 +139,62 @@ def get_n_params(fnn_model):
 #     return output
 
 # reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
-
+# %% Load reference solution (robust to different .npy formats)
 from scipy.interpolate import RegularGridInterpolator
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-u_data = np.load(os.path.join(base_dir, "burgers_reference_solution.npy"), allow_pickle=True)
+ref_path = os.path.join(base_dir, "burgers_reference_solution.npy")
+raw = np.load(ref_path, allow_pickle=True)
 
-# Handle multiple possible data formats safely
-if isinstance(u_data, dict):
-    # Might be stored under a key
-    u_data = list(u_data.values())[0]
-elif isinstance(u_data, RegularGridInterpolator):
-    u_data = u_data
-else:
-    u_data = np.array(u_data)
+# Unwrap if it’s an object array holding a dict/interpolator
+if isinstance(raw, np.ndarray) and raw.dtype == object and raw.size == 1:
+    raw = raw.item()
 
-def reference_solution(data):
-    output = np.zeros(data.shape[0])
-    if isinstance(u_data, RegularGridInterpolator):
-        for i in range(data.shape[0]):
-            output[i] = u_data([data[i, 0], data[i, 1]]).squeeze()
+u_interp = None
+t_grid = None
+x_grid = None
+u_grid = None
+
+if isinstance(raw, dict):
+    # Expect keys like 't', 'x', 'u'
+    if {"t", "x", "u"} <= set(raw.keys()):
+        t_grid = np.asarray(raw["t"], dtype=float)
+        x_grid = np.asarray(raw["x"], dtype=float)
+        u_grid = np.asarray(raw["u"], dtype=float)
+        u_interp = RegularGridInterpolator((t_grid, x_grid), u_grid, bounds_error=False, fill_value=None)
     else:
-        # Just flatten the numpy data if interpolator fails
-        flat = u_data.flatten()
-        output[:] = flat[:data.shape[0]]
-    return output
+        # If dict but unknown keys, try to find the first 2D array
+        for v in raw.values():
+            if isinstance(v, np.ndarray) and v.ndim == 2:
+                u_grid = np.asarray(v, dtype=float)
+                break
+
+elif isinstance(raw, RegularGridInterpolator):
+    # Old pickled interpolator (may not be compatible) — try to use, else rebuild from fallback below
+    u_interp = raw
+
+elif isinstance(raw, np.ndarray):
+    # If it's a plain 2D array, use it directly
+    if raw.ndim == 2:
+        u_grid = np.asarray(raw, dtype=float)
+
+# If we only have a grid but no axes, fabricate axes spanning the standard Burgers domain
+if u_interp is None and u_grid is not None:
+    t_grid = np.linspace(0.0, 0.95, u_grid.shape[0])
+    x_grid = np.linspace(-1.0, 1.0,  u_grid.shape[1])
+    u_interp = RegularGridInterpolator((t_grid, x_grid), u_grid, bounds_error=False, fill_value=None)
+
+def reference_solution(data_tensor):
+    data_np = data_tensor.detach().cpu().numpy()
+    if u_interp is not None:
+        return u_interp(data_np).astype(np.float64)
+    # Last-resort fallback: sample from flattened array (keeps code running without good refs)
+    flat = u_grid.flatten()
+    idx = np.arange(data_np.shape[0]) % flat.size
+    return flat[idx].astype(np.float64)
+
+reference_values = torch.tensor(reference_solution(input_domain), dtype=torch.float32, device=device)
+
 
 # %%
 ## Define loss terms
