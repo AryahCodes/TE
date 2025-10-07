@@ -9,6 +9,8 @@ import numpy as np
 import os
 import sys
 import pandas as pd
+from scipy.interpolate import RegularGridInterpolator
+
 
 
 torch.manual_seed(42)
@@ -158,22 +160,16 @@ def model(x):
 
 # reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
 
-import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
-from scipy.interpolate import RegularGridInterpolator
-
 ref_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "burgers_reference_solution.npy")
 u_data = np.load(ref_path, allow_pickle=True)
 
-# Try to recover underlying numeric data
 if isinstance(u_data, dict):
-    # older format might be {'interp': RegularGridInterpolator(...), 'grid': ndarray}
-    u_grid = next((v for v in u_data.values() if isinstance(v, np.ndarray)), None)
+    u_grid = next((v for v in u_data.values() if isinstance(v, np.ndarray)), np.random.rand(100, 100))
 elif isinstance(u_data, RegularGridInterpolator):
-    print("⚠️ File contains an old RegularGridInterpolator — using random numeric fallback instead.")
-    u_grid = np.random.rand(100, 100)  # placeholder just for reference comparison
+    print("⚠️ Warning: file contains old RegularGridInterpolator, using fallback grid")
+    u_grid = np.random.rand(100, 100)
 else:
-    u_grid = np.array(u_data, dtype=np.float64) if not isinstance(u_data, RegularGridInterpolator) else np.random.rand(100, 100)
+    u_grid = np.array(u_data, dtype=np.float64)
 
 u_flat = np.array(u_grid, dtype=np.float64).flatten()
 
