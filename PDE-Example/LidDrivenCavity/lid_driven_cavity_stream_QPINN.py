@@ -334,3 +334,22 @@ for i in range(len(loss_hist)):
     print(f"{i} {loss_hist[i]} {loss_reference_u_mag[i]} {loss_reference_p[i]}")
 
 # %%
+
+if __name__ == "__main__":
+    import sys
+    # If you pass '--plot-only', skip the training loop
+    if "--plot-only" in sys.argv:
+        print("Plot-only mode: skipping training loop.")
+        # Skip directly to the plotting section
+        # You can load any previous log file or saved state here if desired
+    else:
+        # Normal behavior
+        for i in range(150):
+            start = datetime.datetime.now()
+            opt.step(closure)
+            loss_hist.append(loss_fnc().detach().cpu().numpy())
+            error_p, error_u_mag = compute_l2_error()
+            loss_reference_p.append(error_p.detach().cpu().numpy())
+            loss_reference_u_mag.append(error_u_mag.detach().cpu().numpy())
+            print(f"Iteration: {i} | Loss: {loss_hist[-1]:.8e} | l2 Error P: {error_p:.8e} | l2 Error U Mag: {error_u_mag:.8e}")
+            print(f"\t Iteration duration: {(datetime.datetime.now()-start).total_seconds()}")
