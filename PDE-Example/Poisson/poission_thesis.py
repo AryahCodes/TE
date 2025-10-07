@@ -9,6 +9,8 @@ import numpy as np
 import os
 import sys
 import pandas as pd
+EMBEDDING = "TOWER_CHEBYSHEV"
+
 
 torch.manual_seed(42)
 torch.set_num_threads(8)
