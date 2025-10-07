@@ -139,10 +139,8 @@ def model(x):
 
 # %%
 ## Load the reference solution
-u_interp = np.load(
-    os.path.dirname(os.path.abspath("")) + "/Poisson/poisson_reference_solution.npy",
-    allow_pickle=True,
-).item()
+base_dir = os.path.dirname(os.path.abspath(__file__))
+u_interp = np.load(os.path.join(base_dir, "poisson_reference_solution.npy"), allow_pickle=True).item()
 
 def reference_solution(data):
     output = np.zeros(data.shape[0])
