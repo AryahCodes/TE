@@ -127,18 +127,43 @@ def get_n_params(fnn_model):
         pp += nn
     return pp
 
-# %%
-## Load Reference Solution
+# # %%
+# ## Load Reference Solution
+# base_dir = os.path.dirname(os.path.abspath(__file__))
+# u_interp = np.load(os.path.join(base_dir, "burgers_reference_solution.npy"), allow_pickle=True).item()
+
+# def reference_solution(data):
+#     output = np.zeros(data.shape[0])
+#     for i in range(data.shape[0]):
+#         output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+#     return output
+
+# reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
+
+from scipy.interpolate import RegularGridInterpolator
+
 base_dir = os.path.dirname(os.path.abspath(__file__))
-u_interp = np.load(os.path.join(base_dir, "burgers_reference_solution.npy"), allow_pickle=True).item()
+u_data = np.load(os.path.join(base_dir, "burgers_reference_solution.npy"), allow_pickle=True)
+
+# Handle multiple possible data formats safely
+if isinstance(u_data, dict):
+    # Might be stored under a key
+    u_data = list(u_data.values())[0]
+elif isinstance(u_data, RegularGridInterpolator):
+    u_data = u_data
+else:
+    u_data = np.array(u_data)
 
 def reference_solution(data):
     output = np.zeros(data.shape[0])
-    for i in range(data.shape[0]):
-        output[i] = u_interp([data[i, 0], data[i, 1]]).squeeze()
+    if isinstance(u_data, RegularGridInterpolator):
+        for i in range(data.shape[0]):
+            output[i] = u_data([data[i, 0], data[i, 1]]).squeeze()
+    else:
+        # Just flatten the numpy data if interpolator fails
+        flat = u_data.flatten()
+        output[:] = flat[:data.shape[0]]
     return output
-
-reference_values = torch.tensor(reference_solution(input_domain.detach().cpu()), device=device)
 
 # %%
 ## Define loss terms
